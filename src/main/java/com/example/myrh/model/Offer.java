@@ -40,4 +40,5 @@ public class Offer {
             inverseJoinColumns = { @JoinColumn(name = "jobSeeker_id") })
     Set<JobSeeker> jobSeekers = new HashSet<>();
     private float salary;
+    private String image;
 }

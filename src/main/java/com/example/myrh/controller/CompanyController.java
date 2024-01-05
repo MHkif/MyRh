@@ -59,7 +59,7 @@ public class CompanyController {
     }
 
     @GetMapping("confirm-account")
-    public ResponseEntity<HttpRes> confirmRecruiterAccount(@RequestParam("token") String token){
+    public ResponseEntity<HttpRes> confirmRecruiterAccount(@RequestParam("token") String token) throws  Exception{
         Boolean isSuccess = service.verifyToken(token);
         if(!isSuccess){
             return ResponseEntity.internalServerError().body(

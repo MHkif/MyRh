@@ -58,6 +58,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<Object> handleNoHandlerException(Exception e){
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setPath(e.getStackTrace()[0].getClassName());
+        exceptionResponse.setRequestMethod(e.getStackTrace()[0].getMethodName());
+        exceptionResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        exceptionResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        exceptionResponse.setTimeStamp(LocalDateTime.now().toString());
+        exceptionResponse.setMessage(e.getMessage());
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    /*
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
@@ -70,4 +84,6 @@ public class GlobalExceptionHandler {
         });
         return errors;
     }
+
+     */
 }

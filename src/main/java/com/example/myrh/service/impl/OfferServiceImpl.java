@@ -2,6 +2,7 @@ package com.example.myrh.service.impl;
 
 import com.example.myrh.dto.requests.OfferReq;
 import com.example.myrh.dto.responses.OfferRes;
+import com.example.myrh.enums.OfferStatus;
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.mapper.OfferMapper;
 import com.example.myrh.model.Offer;
@@ -13,7 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +61,6 @@ public class OfferServiceImpl implements IOfferService {
             spec = spec.and(OfferSpecifications.hasJob(job));
         }
 
-
         PageRequest pageRequest = PageRequest.of(page -1, size);
         return repository.findAll(spec, pageRequest).map(mapper::toRes);
     }
@@ -78,6 +77,7 @@ public class OfferServiceImpl implements IOfferService {
         PageRequest pageRequest = PageRequest.of(page, size);
         return repository.findAll(pageRequest).map(mapper::toRes);
     }
+
 
     @Override
     public OfferRes create(OfferReq request) {
