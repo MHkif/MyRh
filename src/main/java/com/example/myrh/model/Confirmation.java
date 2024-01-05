@@ -26,6 +26,10 @@ public class Confirmation {
     @OneToOne(targetEntity = Company.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "company_id")
     private Company company;
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    private LocalDateTime verifiedAt;
+    private boolean isVerified;
 
     public Confirmation(Company recruiter){
         this.company = recruiter;

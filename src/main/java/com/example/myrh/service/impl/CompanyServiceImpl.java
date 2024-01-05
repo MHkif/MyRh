@@ -3,6 +3,7 @@ package com.example.myrh.service.impl;
 import com.example.myrh.dto.requests.CompanyReq;
 import com.example.myrh.dto.responses.CompanyRes;
 import com.example.myrh.dto.responses.RecruiterRes;
+import com.example.myrh.exception.BadRequestException;
 import com.example.myrh.mapper.CompanyMapper;
 import com.example.myrh.model.Company;
 import com.example.myrh.model.Confirmation;
@@ -70,7 +71,7 @@ public class CompanyServiceImpl implements ICompanyService {
 
         String name = res.getName();
         String sendingTo = res.getEmail();
-        String url = "/myrh/api/v1/recruiters/confirm-account?token=";
+        String url = "/myrh/api/v1/companies/confirm-account?token=";
         String subject = "MyRH : Email Verification ";
         String body = verificationEmailMessage(name, url, this.host,confirmation.getToken());
         emailService.sendSimpleMailMessage(name, sendingTo, subject, body);
@@ -103,13 +104,18 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
-    public Boolean verifyToken(String token) {
+    public Boolean verifyToken(String token) throws Exception {
         Confirmation confirmation = confirmationRepo.findByToken(token);
 
         boolean isLessThan3Minutes = this.validateDate(confirmation.getCreatedDate());
-        if (!isLessThan3Minutes) {
-            throw new IllegalStateException("Expired Token : " + token);
+
+         if (!isLessThan3Minutes && !confirmation.isVerified()) {
+           // throw new IllegalStateException("Expired Token : " + token);
+            throw new BadRequestException(("Expired Token : " + token));
+        }else if(confirmation.isVerified()){
+            throw new Exception("Your Account is Already verified .");
         }
+
         Optional<Company> company = repository.findByEmail(confirmation.getCompany().getEmail());
         if (company.isEmpty()) {
             return Boolean.FALSE;
@@ -117,7 +123,10 @@ public class CompanyServiceImpl implements ICompanyService {
 
         company.get().setEnabled(true);
         repository.save(company.get());
-        confirmationRepo.delete(confirmation);
+
+       confirmation.setVerified(true);
+       confirmation.setVerifiedAt(LocalDateTime.now());
+       confirmationRepo.save(confirmation);
         return Boolean.TRUE;
     }
 

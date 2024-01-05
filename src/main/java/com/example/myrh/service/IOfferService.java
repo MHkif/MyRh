@@ -9,4 +9,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface IOfferService extends IService<Offer, Integer, OfferReq, OfferRes>{
     Page<OfferRes> search(int page, int size, String title, String description, String domain, String city, StudyLevel level, String job);
+
 }
