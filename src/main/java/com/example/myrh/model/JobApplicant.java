@@ -17,6 +17,6 @@ public class JobApplicant {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private LocalDateTime createdDate = LocalDateTime.now();
-
+    private String resume;
     private Boolean isViewed;
 }

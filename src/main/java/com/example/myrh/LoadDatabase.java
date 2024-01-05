@@ -4,11 +4,7 @@ package com.example.myrh;
 import com.example.myrh.dto.requests.*;
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.model.*;
-import com.example.myrh.repository.CompanyRepo;
 import com.example.myrh.service.*;
-import com.example.myrh.service.impl.AgentServiceImpl;
-import com.example.myrh.service.impl.CompanyServiceImpl;
-import com.example.myrh.service.impl.RecruiterServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -23,9 +19,8 @@ class LoadDatabase {
 
     @Bean
     CommandLineRunner initDatabase(
-            ICompanyService companyService ,
+            ICompanyService companyService,
             IAgentService agentService,
-            IRecruiterService recruiterService,
             IActivityAreaService profileService,
             ICityService cityService,
             IOfferService offerService,
@@ -41,65 +36,66 @@ class LoadDatabase {
             c1.setImage("sofrecom.png");
 
             AgentReq agent = new AgentReq();
-            agent.setFirst_name("Mehdi");
-            agent.setLast_name("El Hajouji");
+            agent.setFirst_name("Abdelmalek");
+            agent.setLast_name("Achkif");
             agent.setEmail("agent@gmail.com");
-            agent.setPassword("password");
+            agent.setPassword("aqwzsxedc");
             agent.setCompany(Company.builder().id(1).build());
 
-            RecruiterReq recruiter = new RecruiterReq();
-            recruiter.setFirst_name("Recruiter");
-            recruiter.setLast_name("MyRH");
-            recruiter.setEmail("recruiter@myrh.com");
-            recruiter.setPassword("testtest");
-            recruiter.setCompany(Company.builder().id(1).build());
+
 
             CityReq city = new CityReq();
             city.setName("Casablanca");
+
+            CityReq city2 = new CityReq();
+            city2.setName("Nador");
+
+            CityReq city3 = new CityReq();
+            city3.setName("Rabat");
 
             ActivityAreaReq profile = new ActivityAreaReq();
             profile.setDescription("Information Technology");
 
             OfferReq offer = new OfferReq();
-            offer.setTitle("Developer Java/Angular");
-            offer.setDescription("Developer Java/Angular");
-            offer.setRecruiter(Recruiter.builder().id(1).build());
+            offer.setTitle("Developpeur / Developpeuse Full stack");
+            offer.setDescription("EYSI, entreprise de développement informatique, cherche un stagiaire à" +
+                    "partir de BAC +2 pour une durée variant entre 2 à 6 mois.");
+            offer.setCompany(Company.builder().id(1).build());
             offer.setCity(City.builder().id(1).build());
             offer.setProfile(ActivityArea.builder().id(1).build());
             offer.setLevel(StudyLevel.BacPlus2);
             offer.setSalary(12000);
 
             JobSeekerReq jobSeeker = new JobSeekerReq();
-            jobSeeker.setFirst_name("AbdelMalek");
-            jobSeeker.setLast_name("Achkif");
-            jobSeeker.setEmail("achkif@myrh.com");
-            jobSeeker.setPassword("testtest");
+            jobSeeker.setFirst_name("El Mehdi");
+            jobSeeker.setLast_name("El Hajoujy");
+            jobSeeker.setEmail("elmehdi@myrh.com");
 
+           // jobSeeker.setPassword("testtest");
 
+/*
             JobApplicantId jobApplicantId = new JobApplicantId();
-            jobApplicantId.setJobSeeker_id(1);
+            jobApplicantId.setJobSeeker_id(10);
             jobApplicantId.setOffer_id(1);
 
             JobApplicantReq jobApplicant = new JobApplicantReq();
             jobApplicant.setId(jobApplicantId);
+            jobApplicant.setJobSeeker(jobSeeker);
             //jobApplicant.setIsViewed(true);
 
-
+ */
 
 
             log.info("Preloading Company 1: " + companyService.create(c1).toString());
             log.info("Preloading Agent 1 : " + agentService.create(agent).toString());
-            log.info("Preloading Recruiter 1 : " + recruiterService.create(recruiter).toString());
             log.info("Preloading City 1 : " + cityService.create(city).toString());
+            log.info("Preloading City 2 : " + cityService.create(city2).toString());
+            log.info("Preloading City 3 : " + cityService.create(city3).toString());
+
             log.info("Preloading Profile 1 : " + profileService.create(profile).toString());
             log.info("Preloading Offer 1 : " + offerService.create(offer).toString());
-            log.info("Preloading JobSeeker 1 : " + jobSeekerService.create(jobSeeker).toString());
-            log.info("Preloading Job Applicant 1 : " + jobApplicantService.create(jobApplicant).toString());
-
-
-
-
-
+            //log.info("Preloading JobSeeker 1 : " + jobSeekerService.create(jobSeeker).toString());
+            //log.info("Preloading Job Applicant 1 : " + jobApplicantService.create(jobApplicant).toString());
 
 
         };

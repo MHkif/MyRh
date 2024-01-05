@@ -27,6 +27,7 @@ public class CompanyReq {
     private String email;
     private String password;
     private String image;
+    private boolean enabled;
     /*
     Set<Recruiter> recruiters = new HashSet<>();
     Set<Agent> agents = new HashSet<>();

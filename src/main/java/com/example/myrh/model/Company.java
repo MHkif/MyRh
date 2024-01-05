@@ -21,8 +21,6 @@ public class Company{
     private String image;
     private boolean enabled;
     @OneToMany(mappedBy = "company")
-    Set<Recruiter> recruiters = new HashSet<>();
-    @OneToMany(mappedBy = "company")
     Set<Agent> agents = new HashSet<>();
 
     @Override

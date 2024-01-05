@@ -3,6 +3,7 @@ package com.example.myrh.controller;
 import com.example.myrh.dto.requests.OfferReq;
 import com.example.myrh.dto.responses.CompanyRes;
 import com.example.myrh.dto.responses.OfferRes;
+import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.service.IOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,10 +29,17 @@ public class OfferController {
         return ResponseEntity.ok(response);
     }
 
-
+/*
     @GetMapping("")
     public ResponseEntity<Page<OfferRes>> getAll(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(service.getAll(page, size));
+    }
+
+
+ */
+    @GetMapping("")
+    public ResponseEntity<Page<OfferRes>> search(@RequestParam(required = false) int page, @RequestParam(required = false) int size,@RequestParam(required = false) String title, @RequestParam(required = false) String description, @RequestParam(required = false) String domain,@RequestParam(required = false) String city,@RequestParam(required = false) StudyLevel level,@RequestParam(required = false) String job) {
+        return ResponseEntity.ok(service.search(page, size, title, description, domain, city, level, job));
     }
 
     @GetMapping("{id}")

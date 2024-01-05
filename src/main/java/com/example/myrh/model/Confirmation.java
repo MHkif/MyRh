@@ -23,12 +23,12 @@ public class Confirmation {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private LocalDateTime createdDate;
-    @OneToOne(targetEntity = Recruiter.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "recruiter_id")
-    private Recruiter recruiter;
+    @OneToOne(targetEntity = Company.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "company_id")
+    private Company company;
 
-    public Confirmation(Recruiter recruiter){
-        this.recruiter = recruiter;
+    public Confirmation(Company recruiter){
+        this.company = recruiter;
         this.createdDate = LocalDateTime.now();
         this.token = UUID.randomUUID().toString();
     }

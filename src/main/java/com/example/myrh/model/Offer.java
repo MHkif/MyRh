@@ -19,7 +19,7 @@ public class Offer {
     @Column(nullable = false)
     private String description;
     @ManyToOne
-    private Recruiter recruiter;
+    private Company company;
     @ManyToOne
     private ActivityArea profile;
     @ManyToOne

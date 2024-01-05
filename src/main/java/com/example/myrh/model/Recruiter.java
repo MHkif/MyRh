@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
+//@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class Recruiter extends Person {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    //@ManyToOne
     private Company company;
 
-    @OneToMany(mappedBy = "recruiter")
+   // @OneToMany(mappedBy = "recruiter")
     private List<Offer> offers = new ArrayList<>();
 }

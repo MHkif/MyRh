@@ -9,6 +9,7 @@ public class CompanyRes {
     private String email;
     private String password;
     private String image;
+    private  boolean enabled;
 
     @Override
     public String toString() {
@@ -18,6 +19,7 @@ public class CompanyRes {
                 "email : "+ this.email+
                 "password : "+ this.password+
                 "image : "+ this.image+
+                "enabled : "+ this.enabled+
                 "}";
     }
 }

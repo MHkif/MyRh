@@ -2,29 +2,43 @@ package com.example.myrh.service.impl;
 
 import com.example.myrh.dto.requests.CompanyReq;
 import com.example.myrh.dto.responses.CompanyRes;
+import com.example.myrh.dto.responses.RecruiterRes;
 import com.example.myrh.mapper.CompanyMapper;
 import com.example.myrh.model.Company;
+import com.example.myrh.model.Confirmation;
+import com.example.myrh.model.Recruiter;
 import com.example.myrh.repository.CompanyRepo;
+import com.example.myrh.repository.ConfirmationRepo;
 import com.example.myrh.service.ICompanyService;
 import com.example.myrh.exception.NotFoundException;
+import com.example.myrh.service.IEmailService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class CompanyServiceImpl implements ICompanyService {
 
     private final CompanyRepo repository;
+    private final ConfirmationRepo confirmationRepo;
     private final CompanyMapper mapper;
+    private final IEmailService emailService;
+    @Value("${spring.mail.properties.verify.host}")
+    private String host;
 
     @Autowired
-    public CompanyServiceImpl(CompanyRepo repository, CompanyMapper mapper) {
+    public CompanyServiceImpl(CompanyRepo repository, CompanyMapper mapper, ConfirmationRepo confirmationRepo, IEmailService emailService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.emailService = emailService;
+        this.confirmationRepo = confirmationRepo;
     }
 
 
@@ -45,11 +59,37 @@ public class CompanyServiceImpl implements ICompanyService {
     public CompanyRes create(CompanyReq request) {
         if (repository.existsByEmail(request.getEmail())) {
             throw new IllegalStateException("Email Already Taken");
-
         }
 
+        request.setEnabled(false);
         Company company = repository.save(mapper.reqToEntity(request));
-        return mapper.toRes(company);
+        CompanyRes res = mapper.toRes(company);
+
+        Confirmation confirmation = new Confirmation(company);
+        confirmationRepo.save(confirmation);
+
+        String name = res.getName();
+        String sendingTo = res.getEmail();
+        String url = "/myrh/api/v1/recruiters/confirm-account?token=";
+        String subject = "MyRH : Email Verification ";
+        String body = verificationEmailMessage(name, url, this.host,confirmation.getToken());
+        emailService.sendSimpleMailMessage(name, sendingTo, subject, body);
+        return res;
+
+    }
+
+    @Override
+    public CompanyRes auth(String email, String password) {
+        if (repository.existsByEmail(email)) {
+            Company company = repository.findByEmail(email).get();
+            if (!Objects.equals(company.getPassword(), password)) {
+                throw new IllegalStateException("Incorrect Passowrd");
+            }
+            return  mapper.toRes(company);
+
+        } else {
+            throw new EntityNotFoundException("No Company Found with this Email");
+        }
     }
 
     @Override
@@ -61,4 +101,41 @@ public class CompanyServiceImpl implements ICompanyService {
     public void deleteById(int id) {
 
     }
+
+    @Override
+    public Boolean verifyToken(String token) {
+        Confirmation confirmation = confirmationRepo.findByToken(token);
+
+        boolean isLessThan3Minutes = this.validateDate(confirmation.getCreatedDate());
+        if (!isLessThan3Minutes) {
+            throw new IllegalStateException("Expired Token : " + token);
+        }
+        Optional<Company> company = repository.findByEmail(confirmation.getCompany().getEmail());
+        if (company.isEmpty()) {
+            return Boolean.FALSE;
+        }
+
+        company.get().setEnabled(true);
+        repository.save(company.get());
+        confirmationRepo.delete(confirmation);
+        return Boolean.TRUE;
+    }
+
+    public boolean validateDate(LocalDateTime date) {
+        return LocalDateTime.now().getMinute() - date.getMinute() <= 3;
+
+    }
+
+    private String verificationEmailMessage(String name, String url, String host, String token) {
+        return "Hello " + name + ", \n\n" +
+                "You account has been created successfully," +
+                " Please click the link below to verify your account . \n\n" +
+                host + url + token + " \n\n" +
+                "Note : Link will be expired after 3 minutes. \n\n" +
+                "The Support Team MyRH .";
+
+
+    }
+
+
 }

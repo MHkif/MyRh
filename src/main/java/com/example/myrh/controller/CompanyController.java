@@ -1,6 +1,7 @@
 package com.example.myrh.controller;
 
 import com.example.myrh.dto.HttpRes;
+import com.example.myrh.dto.requests.AuthReq;
 import com.example.myrh.dto.requests.CompanyReq;
 import com.example.myrh.dto.responses.CompanyRes;
 import com.example.myrh.service.ICompanyService;
@@ -41,6 +42,46 @@ public class CompanyController {
        );
     }
 
+    @PostMapping("/auth")
+    public ResponseEntity<HttpRes> auth(@Valid @RequestBody AuthReq auth){
+        CompanyRes response = service.auth(auth.getEmail(), auth.getPassword());
+        return ResponseEntity.accepted().body(
+                HttpRes.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .statusCode(HttpStatus.ACCEPTED.value())
+                        .path("myrh/api/v1/companies")
+                        .status(HttpStatus.ACCEPTED)
+                        .message("Company has been authenticated")
+                        .developerMessage("Company  has been authenticated")
+                        .data(Map.of("response", response))
+                        .build()
+        );
+    }
+
+    @GetMapping("confirm-account")
+    public ResponseEntity<HttpRes> confirmRecruiterAccount(@RequestParam("token") String token){
+        Boolean isSuccess = service.verifyToken(token);
+        if(!isSuccess){
+            return ResponseEntity.internalServerError().body(
+                    HttpRes.builder()
+                            .timeStamp(LocalDateTime.now().toString())
+                            .status(HttpStatus.NOT_FOUND)
+                            .message("Account Not Found")
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .data(Map.of("Success",isSuccess ))
+                            .build()
+            );
+        }
+        return ResponseEntity.created(URI.create("")).body(
+                HttpRes.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .message("Account Verified")
+                        .statusCode(HttpStatus.OK.value())
+                        .data(Map.of("Success",isSuccess ))
+                        .build()
+        );
+    }
     @PutMapping("{id}")
     public ResponseEntity<CompanyRes>  update(@RequestBody CompanyReq req, @PathVariable Integer id) {
         return ResponseEntity.ok(new CompanyRes());
