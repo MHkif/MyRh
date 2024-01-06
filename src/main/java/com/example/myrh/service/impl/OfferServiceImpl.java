@@ -44,6 +44,21 @@ public class OfferServiceImpl implements IOfferService {
         return repository.findAll(spec, pageRequest).map(mapper::toRes);
     }
 
+    @Override
+    public OfferRes updateVisibility(int offerId, String visible) {
+        try {
+
+            Offer offer = repository.findById(offerId).orElseThrow(
+                    () -> new EntityNotFoundException("Offer Not Found"));
+            offer.setStatus(OfferStatus.valueOf(visible));
+
+            return mapper.toRes(repository.save(offer));
+
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid Visibility");
+        }
+    }
+
     private Specification<Offer> buildSpecification(String title, String description, String domain, String city, StudyLevel level, String job) {
         Specification<Offer> spec = Specification.where(null);
 
