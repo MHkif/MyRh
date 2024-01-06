@@ -1,9 +1,11 @@
 package com.example.myrh.model;
 
+import com.example.myrh.enums.ContractEnum;
 import com.example.myrh.enums.OfferStatus;
 import com.example.myrh.enums.StudyLevel;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.apache.http.annotation.Contract;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +30,8 @@ public class Offer {
     private StudyLevel level;
     @Enumerated(EnumType.STRING)
     private OfferStatus status = OfferStatus.PENDING;
+    @Enumerated(EnumType.STRING)
+    private ContractEnum contrat = ContractEnum.DISCUSSED;
 
     // @ManyToMany annotation is used on both the entities but only one entity can be the owner of the relationship.
     @ManyToMany(fetch = FetchType.LAZY,
