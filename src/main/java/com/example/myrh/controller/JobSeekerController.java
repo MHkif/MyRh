@@ -36,7 +36,7 @@ public class JobSeekerController {
     public ResponseEntity<Page<JobSeekerRes>> getAll(@RequestParam int page, @RequestParam int size ) {
         return ResponseEntity.ok(service.getAll(page, size));
     }
-    // TODO : 7-01-2024 Avoir tous les candidats filtré par type de candidature (Online ou Offline) ou par titre de l'offre
+    //  : 7-01-2024 Avoir tous les candidats filtré par type de candidature (Online ou Offline) ou par titre de l'offre
     @GetMapping("/filter")
     public ResponseEntity<Page<JobSeekerRes>> filterAll(
             @RequestParam  Map<String,String> params) {
