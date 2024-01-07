@@ -15,6 +15,7 @@ public class JobSeeker extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
 
     // The entity that specifies the @JoinTable is the owning side of the relationship and
     // the entity that specifies the mappedBy attribute is the inverse side.

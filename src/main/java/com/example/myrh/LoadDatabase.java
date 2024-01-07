@@ -3,7 +3,9 @@ package com.example.myrh;
 
 import com.example.myrh.dto.requests.*;
 import com.example.myrh.enums.StudyLevel;
+import com.example.myrh.enums.UserStatus;
 import com.example.myrh.model.*;
+import com.example.myrh.repository.JobSeekerRepo;
 import com.example.myrh.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +26,13 @@ class LoadDatabase {
             IActivityAreaService profileService,
             ICityService cityService,
             IOfferService offerService,
+            JobSeekerRepo jobSeekerRepo,
             IJobSeekerService jobSeekerService,
             IJobApplicantService jobApplicantService) {
 
         return args -> {
+
+            saveJobSeeker(jobSeekerRepo);
 
             CompanyReq c1 = new CompanyReq();
             c1.setName("Sofrecom");
@@ -99,5 +104,17 @@ class LoadDatabase {
 
 
         };
+    }
+
+    private void saveJobSeeker(JobSeekerRepo jobSeekerRepo) {
+        JobSeeker jobSeeker = new JobSeeker();
+        jobSeeker.setFirst_name("El Mehdi");
+        jobSeeker.setLast_name("El Hajoujy");
+        jobSeeker.setEmail("elmahdi311@gmail.com");
+        jobSeeker.setPassword("testtest");
+        jobSeeker.setStatus(UserStatus.ONLINE);
+        jobSeeker = jobSeekerRepo.save(jobSeeker);
+        log.info("Preloading JobSeeker  : " + jobSeeker.getId() + " " + jobSeeker.getFirst_name() + " " + jobSeeker.getLast_name());
+
     }
 }
