@@ -59,7 +59,7 @@ public class CompanyController {
     }
 
     @GetMapping("confirm-account")
-    public ResponseEntity<HttpRes> confirmRecruiterAccount(@RequestParam("token") String token) throws  Exception{
+    public ResponseEntity<HttpRes> confirmAccount(@RequestParam("token") String token) throws  Exception{
         Boolean isSuccess = service.verifyToken(token);
         if(!isSuccess){
             return ResponseEntity.internalServerError().body(
@@ -82,6 +82,22 @@ public class CompanyController {
                         .build()
         );
     }
+
+    @GetMapping("confirm-account/re-send")
+    public ResponseEntity<HttpRes> reSendVerification(@RequestParam("token") String token) throws Exception {
+        Boolean isSuccess = service.sendVerification(token);
+
+        return ResponseEntity.ok().body(
+                HttpRes.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .message("Account Verified has been sent")
+                        .statusCode(HttpStatus.OK.value())
+                        .data(Map.of("Success",isSuccess ))
+                        .build()
+        );
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<CompanyRes>  update(@RequestBody CompanyReq req, @PathVariable Integer id) {
         return ResponseEntity.ok(new CompanyRes());
