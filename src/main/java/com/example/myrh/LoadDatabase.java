@@ -71,7 +71,7 @@ class LoadDatabase {
             jobSeeker.setLast_name("El Hajoujy");
             jobSeeker.setEmail("elmehdi@myrh.com");
 
-           // jobSeeker.setPassword("testtest");
+            jobSeeker.setPassword("testtest");
 
 /*
             JobApplicantId jobApplicantId = new JobApplicantId();
@@ -94,7 +94,7 @@ class LoadDatabase {
 
             log.info("Preloading Profile 1 : " + profileService.create(profile).toString());
             log.info("Preloading Offer 1 : " + offerService.create(offer).toString());
-            //log.info("Preloading JobSeeker 1 : " + jobSeekerService.create(jobSeeker).toString());
+            log.info("Preloading JobSeeker 1 : " + jobSeekerService.create(jobSeeker).toString());
             //log.info("Preloading Job Applicant 1 : " + jobApplicantService.create(jobApplicant).toString());
 
 

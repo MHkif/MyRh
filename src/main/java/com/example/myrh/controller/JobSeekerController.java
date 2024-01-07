@@ -1,14 +1,23 @@
 package com.example.myrh.controller;
 
 
+import com.example.myrh.dto.HttpRes;
+import com.example.myrh.dto.requests.AuthReq;
 import com.example.myrh.dto.requests.JobSeekerReq;
+import com.example.myrh.dto.responses.CompanyRes;
 import com.example.myrh.dto.responses.JobSeekerRes;
 
 import com.example.myrh.service.IJobSeekerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("myrh/api/v1/jobSeekers")
@@ -22,9 +31,35 @@ public class JobSeekerController {
     }
 
     @PostMapping("")
-    public ResponseEntity<JobSeekerRes> save(@RequestBody JobSeekerReq req) {
+    public ResponseEntity<HttpRes> save(@Valid @RequestBody JobSeekerReq req) {
         JobSeekerRes response = service.create(req);
-        return ResponseEntity.ok(response);
+          return ResponseEntity.created(URI.create("")).body(
+                HttpRes.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .statusCode(HttpStatus.CREATED.value())
+                        .path("myrh/api/v1/jobSeekers")
+                        .status(HttpStatus.CREATED)
+                        .message("JobSeeker has been Created")
+                        .developerMessage("JobSeeker  has been Created")
+                        .data(Map.of("response", response))
+                        .build()
+        );
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<HttpRes> auth(@Valid @RequestBody AuthReq auth){
+        JobSeekerRes response = service.auth(auth.getEmail(), auth.getPassword());
+        return ResponseEntity.accepted().body(
+                HttpRes.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .statusCode(HttpStatus.ACCEPTED.value())
+                        .path("myrh/api/v1/jobSeekers")
+                        .status(HttpStatus.ACCEPTED)
+                        .message("JobSeeker has been authenticated")
+                        .developerMessage("JobSeeker  has been authenticated")
+                        .data(Map.of("response", response))
+                        .build()
+        );
     }
 
     @GetMapping("")
