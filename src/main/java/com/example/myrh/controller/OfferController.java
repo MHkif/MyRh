@@ -3,6 +3,7 @@ package com.example.myrh.controller;
 import com.example.myrh.dto.requests.OfferReq;
 import com.example.myrh.dto.responses.CompanyRes;
 import com.example.myrh.dto.responses.OfferRes;
+import com.example.myrh.enums.OfferStatus;
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.service.IOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,6 @@ public class OfferController {
     public ResponseEntity<Page<OfferRes>> getAll(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(service.getAll(page, size));
     }
-
-
  */
     @GetMapping("")
     public ResponseEntity<Page<OfferRes>>
@@ -55,5 +54,15 @@ public class OfferController {
         OfferRes response = this.service.update(id, offer);
         return ResponseEntity.ok(response);
     }
+
+    //Partial update visibility
+    @PatchMapping("/{offerId}/visibility/{visibility}")
+    public ResponseEntity<OfferRes> updateVisibility(
+            @PathVariable int offerId, @PathVariable String visibility) {
+        OfferRes response = this.service.updateVisibility(offerId, visibility);
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }
