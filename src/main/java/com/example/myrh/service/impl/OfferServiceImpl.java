@@ -40,7 +40,7 @@ public class OfferServiceImpl implements IOfferService {
             size=10;
         }
 
-        PageRequest pageRequest = PageRequest.of(page , size);
+        PageRequest pageRequest = PageRequest.of(page-1 , size);
         return repository.findAll(spec, pageRequest).map(mapper::toRes);
     }
 
