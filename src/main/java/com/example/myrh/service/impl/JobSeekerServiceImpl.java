@@ -2,20 +2,26 @@ package com.example.myrh.service.impl;
 
 import com.example.myrh.dto.requests.JobSeekerReq;
 import com.example.myrh.dto.responses.JobSeekerRes;
+import com.example.myrh.enums.UserStatus;
 import com.example.myrh.mapper.JobSeekerMapper;
 import com.example.myrh.model.JobSeeker;
 import com.example.myrh.repository.JobSeekerRepo;
+import com.example.myrh.service.IJobSeekerFilterService;
 import com.example.myrh.service.IJobSeekerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 
 @Service
-public class JobSeekerServiceImpl implements IJobSeekerService {
+public class JobSeekerServiceImpl implements IJobSeekerService , IJobSeekerFilterService {
 
+    //TODO: IT'S SO MUCH BETTER TO NAME THE JOB SEEKER REPOSITORY ->JobSeekerRepository than repository
     private final JobSeekerRepo repository;
+
     private final JobSeekerMapper mapper;
 
     @Autowired
@@ -53,6 +59,25 @@ public class JobSeekerServiceImpl implements IJobSeekerService {
 
     @Override
     public void deleteById(int id) {
+
+    }
+
+    @Override
+    public Page<JobSeekerRes> filterAll(Map<String, String> params) {
+        //  : 7-01-2024 filter jobSeeker by their state online or offline ?status=online/offline
+
+        //  String status= params.getOrDefault("status".toLowerCase(),"online");
+        String status= params.containsKey("status".toLowerCase())?params.get("status").toUpperCase():"";
+        int page = Integer.parseInt(params.getOrDefault("page","0"));
+        int size = Integer.parseInt(params.getOrDefault("size","10"));
+
+
+        try{
+            UserStatus userStatus = UserStatus.valueOf(status);
+            return repository.getAllByStatus(userStatus,PageRequest.of(page,size)).map(mapper::toRes);
+        }catch (Exception e){
+            throw new IllegalStateException("Illegal user status used to filter jobSeekers {ONLINE, OFFLINE , BUSY ,ALL}");
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.myrh.model;
 
+import com.example.myrh.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,8 @@ public abstract class Person {
     private String password;
     private String image;
     private boolean isEnabled;
+    @Enumerated(EnumType.STRING)
+    protected UserStatus status;
 
 
 }
