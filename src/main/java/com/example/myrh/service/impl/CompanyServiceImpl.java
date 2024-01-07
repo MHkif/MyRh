@@ -71,7 +71,7 @@ public class CompanyServiceImpl implements ICompanyService {
 
         String name = res.getName();
         String sendingTo = res.getEmail();
-        String url = "/myrh/api/v1/companies/confirm-account?token=";
+        String url = "company/auth/confirm-account/";
         String subject = "MyRH : Email Verification ";
         String body = verificationEmailMessage(name, url, this.host,confirmation.getToken());
         emailService.sendSimpleMailMessage(name, sendingTo, subject, body);
@@ -106,11 +106,13 @@ public class CompanyServiceImpl implements ICompanyService {
     @Override
     public Boolean verifyToken(String token) throws Exception {
         Confirmation confirmation = confirmationRepo.findByToken(token);
+        if(Objects.isNull(confirmation)){
+            throw  new EntityNotFoundException("Token Not Found ");
+        }
 
         boolean isLessThan3Minutes = this.validateDate(confirmation.getCreatedDate());
 
          if (!isLessThan3Minutes && !confirmation.isVerified()) {
-           // throw new IllegalStateException("Expired Token : " + token);
             throw new BadRequestException(("Expired Token : " + token));
         }else if(confirmation.isVerified()){
             throw new Exception("Your Account is Already verified .");
@@ -130,6 +132,36 @@ public class CompanyServiceImpl implements ICompanyService {
         return Boolean.TRUE;
     }
 
+    @Override
+    public Boolean sendVerification(String token) throws Exception {
+        Confirmation confirmation = confirmationRepo.findByToken(token);
+        if(Objects.isNull(confirmation)){
+            throw  new EntityNotFoundException("Token Not Found ");
+        }else if(confirmation.isVerified()){
+        throw new Exception("Your Account is Already verified .");
+    }
+
+
+        Optional<Company> company = repository.findByEmail(confirmation.getCompany().getEmail());
+        if (company.isEmpty()) {
+            throw new EntityNotFoundException("Company not found with the given credential.");
+        }
+
+        Confirmation new_confirmation = new Confirmation(company.get());
+        confirmationRepo.delete(confirmation); // we have to delete this first before inserting another record in DB
+        confirmationRepo.save(new_confirmation);
+
+
+        String name = company.get().getName();
+        String sendingTo = company.get().getEmail();
+        String url = "company/auth/confirm-account/";
+        String subject = "MyRH : Re-Send Verification ";
+        String body = verificationEmailMessage(name, url, this.host,new_confirmation.getToken());
+        emailService.sendSimpleMailMessage(name, sendingTo, subject, body);
+
+        return null;
+    }
+
     public boolean validateDate(LocalDateTime date) {
         return LocalDateTime.now().getMinute() - date.getMinute() <= 3;
 
@@ -145,6 +177,7 @@ public class CompanyServiceImpl implements ICompanyService {
 
 
     }
+
 
 
 }

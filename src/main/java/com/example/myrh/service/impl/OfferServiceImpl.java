@@ -34,8 +34,19 @@ public class OfferServiceImpl implements IOfferService {
 
     @Override
     public Page<OfferRes> search(int page, int size, String title, String description, String domain, String city, StudyLevel level, String job) {
+        Specification<Offer> spec = buildSpecification(title, description, domain, city, level, job);
 
+        if (size>10) {
+            size=10;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page , size);
+        return repository.findAll(spec, pageRequest).map(mapper::toRes);
+    }
+
+    private Specification<Offer> buildSpecification(String title, String description, String domain, String city, StudyLevel level, String job) {
         Specification<Offer> spec = Specification.where(null);
+
 
         if (title != null && !title.isEmpty()) {
             spec = spec.and(OfferSpecifications.hasTitle(title));
@@ -61,8 +72,8 @@ public class OfferServiceImpl implements IOfferService {
             spec = spec.and(OfferSpecifications.hasJob(job));
         }
 
-        PageRequest pageRequest = PageRequest.of(page -1, size);
-        return repository.findAll(spec, pageRequest).map(mapper::toRes);
+        return spec;
+
     }
 
     @Override
