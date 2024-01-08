@@ -9,6 +9,7 @@ import com.example.myrh.model.Offer;
 import com.example.myrh.repository.CompanyRepo;
 import com.example.myrh.repository.OfferRepo;
 import com.example.myrh.service.IOfferService;
+import com.example.myrh.service.OfferInsightsService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class OfferServiceImpl implements IOfferService {
+public class OfferServiceImpl implements IOfferService , OfferInsightsService {
     private final OfferRepo repository;
     private final CompanyRepo companyRepo;
     private final OfferMapper mapper;
