@@ -1,20 +1,15 @@
 package com.example.myrh.controller;
 
-import com.example.myrh.dto.FileModel;
 import com.example.myrh.dto.requests.JobApplicantReq;
-import com.example.myrh.dto.requests.JobSeekerReq;
 import com.example.myrh.dto.responses.JobApplicantRes;
-import com.example.myrh.dto.responses.JobSeekerRes;
 import com.example.myrh.model.JobApplicantId;
 import com.example.myrh.service.IJobApplicantService;
-import com.example.myrh.service.impl.CloudinaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("myrh/api/v1/jobApplicants")

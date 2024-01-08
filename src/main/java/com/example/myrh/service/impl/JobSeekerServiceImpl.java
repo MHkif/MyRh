@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 public class JobSeekerServiceImpl implements IJobSeekerService , IJobSeekerFilterService {
 
-    //TODO: IT'S SO MUCH BETTER TO NAME THE JOB SEEKER REPOSITORY ->JobSeekerRepository than repository
+    //: IT'S SO MUCH BETTER TO NAME THE JOB SEEKER REPOSITORY ->JobSeekerRepository than repository
     private final JobSeekerRepo repository;
 
     private final JobSeekerMapper mapper;

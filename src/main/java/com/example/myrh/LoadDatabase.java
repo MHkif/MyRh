@@ -2,9 +2,11 @@ package com.example.myrh;
 
 
 import com.example.myrh.dto.requests.*;
+import com.example.myrh.enums.JobApplicationStatus;
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.enums.UserStatus;
 import com.example.myrh.model.*;
+import com.example.myrh.repository.JobApplicantRepo;
 import com.example.myrh.repository.JobSeekerRepo;
 import com.example.myrh.service.*;
 import org.slf4j.Logger;
@@ -17,6 +19,11 @@ import org.springframework.context.annotation.Configuration;
 class LoadDatabase {
 
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
+    private final JobApplicantRepo jobApplicantRepo;
+
+    public LoadDatabase(JobApplicantRepo jobApplicantRepo) {
+        this.jobApplicantRepo = jobApplicantRepo;
+    }
 
 
     @Bean
@@ -101,7 +108,7 @@ class LoadDatabase {
             log.info("Preloading Offer 1 : " + offerService.create(offer).toString());
             log.info("Preloading JobSeeker 1 : " + jobSeekerService.create(jobSeeker).toString());
             //log.info("Preloading Job Applicant 1 : " + jobApplicantService.create(jobApplicant).toString());
-
+            saveFakeJobApplication();
 
         };
     }
@@ -115,6 +122,27 @@ class LoadDatabase {
         jobSeeker.setStatus(UserStatus.ONLINE);
         jobSeeker = jobSeekerRepo.save(jobSeeker);
         log.info("Preloading JobSeeker  : " + jobSeeker.getId() + " " + jobSeeker.getFirst_name() + " " + jobSeeker.getLast_name());
+
+    }
+
+    private void saveFakeJobApplication(){
+        JobApplicantId jobApplicantId = new JobApplicantId();
+        jobApplicantId.setJobSeeker_id(1);
+        jobApplicantId.setOffer_id(1);
+        JobApplicant jobApplicant = new JobApplicant();
+        jobApplicant.setId(jobApplicantId);
+        jobApplicant.setResume("path/to/resume");
+        jobApplicant.setStatus(JobApplicationStatus.ACCEPTED);
+        jobApplicant.setIsViewed(true);
+
+
+
+        //jobApplicant.setJobSeeker(jobSeeker);
+        //jobApplicant.setIsViewed(true);
+        this.jobApplicantRepo.save(jobApplicant);
+        jobApplicant.getId().setJobSeeker_id(2);
+        this.jobApplicantRepo.save(jobApplicant);
+
 
     }
 }
