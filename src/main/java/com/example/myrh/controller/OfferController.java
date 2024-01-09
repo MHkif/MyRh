@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Map;
 
 @RestController
@@ -74,11 +75,11 @@ public class OfferController {
         return ResponseEntity.ok(this.insightsService.getCandidatesOfferInsights(candidateID));
     }
     @GetMapping("/insights/jobSeeker/company/{companyID}")
-    public ResponseEntity<Page<JobSeekerOfferInsightsResponse>> getAllCandidatesOfferInsights(
-            @PathVariable int companyID,
-            @RequestParam Map<String,String> params
+    public ResponseEntity<Collection<JobSeekerOfferInsightsResponse>> getAllCandidatesOfferInsights(
+            @PathVariable String companyID,
+            @RequestParam(required = false) Map<String,String> params
             ) {
-        return ResponseEntity.ok(this.insightsService.getCandidatesOfferInsights(
+        return ResponseEntity.ok(this.insightsService.getAllCandidatesOfferInsights(
                 companyID, params));
     }
 

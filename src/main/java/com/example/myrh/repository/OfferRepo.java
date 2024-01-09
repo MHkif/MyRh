@@ -11,11 +11,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface OfferRepo extends JpaRepository<Offer, Integer>, JpaSpecificationExecutor<Offer> {
 
     Page<Offer> findAllByStatus( Pageable pageable, OfferStatus status, Specification<Offer> spec );
 
-    Page<Offer> findAllByCompany(Company company);
+    Collection<Offer> findAllByCompany(Company company);
 }

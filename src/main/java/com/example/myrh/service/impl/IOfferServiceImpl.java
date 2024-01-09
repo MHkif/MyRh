@@ -198,11 +198,11 @@ public class IOfferServiceImpl implements IOfferService, IOfferInsightsService {
     }
 
     @Override
-    public Collection<JobSeekerOfferInsightsResponse> getAllCandidatesOfferInsights(int id , Map<String, String> params) {
+    public Collection<JobSeekerOfferInsightsResponse> getAllCandidatesOfferInsights(String id , Map<String, String> params) {
         //get all jobSeeker which used to apply to this company than call the function before .
-        Company company =  this.companyRepo.findById(id).orElseThrow(() -> new NotFoundException("Company with "+id+" not found"));
+        Company company =  this.companyRepo.findById(Integer.parseInt(id)).orElseThrow(() -> new NotFoundException("Company with "+id+" not found"));
         Collection<JobSeekerOfferInsightsResponse> jobSeekerOfferInsightsResponseCollection = new ArrayList<>();
-        PageRequest pageRequest = PageRequest.of(Integer.parseInt(params.get("page")), Integer.parseInt(params.get("size")));
+//        PageRequest pageRequest = PageRequest.of(Integer.parseInt(params.get("page")), Integer.parseInt(params.get("size")));
         //find offers byt company .... then loop into each offer and get all job application from them
         this.repository.findAllByCompany(company).forEach(offer -> {
             this.jobApplicantRepo.getAllById_Offer_id(offer.getId()).forEach(jobApplicant -> {

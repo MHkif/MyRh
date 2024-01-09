@@ -12,5 +12,5 @@ public interface IOfferInsightsService {
 
     JobSeekerOfferInsightsResponse getCandidatesOfferInsights(int seekerId);
     Page<JobSeekerOfferInsightsResponse> getCandidatesOfferInsights(int page, int size);
-    Collection<JobSeekerOfferInsightsResponse> getAllCandidatesOfferInsights(int  id , Map<String,String> params );
+    Collection<JobSeekerOfferInsightsResponse> getAllCandidatesOfferInsights(String  id , Map<String,String> params );
 }
