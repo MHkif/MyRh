@@ -60,7 +60,7 @@ class JobSeekerServiceImplTest {
 
     @Test
     void filterAll() {
-         //TODO : 7-01-2024 filter jobSeeker by their state online or offline ?status=online/offline
+         // : 7-01-2024 filter jobSeeker by their state online or offline ?status=online/offline
         Map<String,String> params = new HashMap<>();
         params.put("status","online");
         params.put("page","0");

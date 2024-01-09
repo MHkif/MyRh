@@ -1,7 +1,6 @@
 package com.example.myrh.service.impl;
 
 import com.example.myrh.dto.requests.JobApplicantReq;
-import com.example.myrh.dto.requests.JobSeekerReq;
 import com.example.myrh.dto.responses.JobApplicantRes;
 import com.example.myrh.model.JobApplicant;
 import com.example.myrh.model.JobApplicantId;

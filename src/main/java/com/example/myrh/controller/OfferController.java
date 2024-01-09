@@ -1,27 +1,29 @@
 package com.example.myrh.controller;
 
 import com.example.myrh.dto.requests.OfferReq;
-import com.example.myrh.dto.responses.CompanyRes;
+import com.example.myrh.dto.responses.JobSeekerOfferInsightsResponse;
 import com.example.myrh.dto.responses.OfferRes;
-import com.example.myrh.enums.OfferStatus;
 import com.example.myrh.enums.StudyLevel;
+import com.example.myrh.service.IOfferInsightsService;
 import com.example.myrh.service.IOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("myrh/api/v1/offers")
 @CrossOrigin("*")
 public class OfferController {
     private final IOfferService service;
+    private final IOfferInsightsService insightsService;
+
 
     @Autowired
-    public OfferController(IOfferService service) {
+    public OfferController(IOfferService service, IOfferInsightsService insightsService) {
+
         this.service = service;
+        this.insightsService = insightsService;
     }
 
     @PostMapping("")
@@ -62,6 +64,14 @@ public class OfferController {
         OfferRes response = this.service.updateVisibility(offerId, visibility);
         return ResponseEntity.ok(response);
     }
+
+    //: Avoir des statistiques des offres d'emploi par candidats
+    @GetMapping("/insights/jobSeeker/{candidateID}")
+    public ResponseEntity<JobSeekerOfferInsightsResponse> getCandidatesOfferInsights(@PathVariable int candidateID) {
+        return ResponseEntity.ok(this.insightsService.getCandidatesOfferInsights(candidateID));
+    }
+
+
 
 
 

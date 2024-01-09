@@ -29,11 +29,12 @@ jobs:
           job-status: success
 
       - name: Build with Maven without testing for now we need container Test for our database in the future so we can run test
-        run: mvn clean install -DskipTests=true
+        run: mvn clean install
+#        -DskipTests=true
 
 
-#      - name: Run tests
-#        run: mvn clean test -B
+      - name: Run tests
+        run: mvn clean test -B
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
