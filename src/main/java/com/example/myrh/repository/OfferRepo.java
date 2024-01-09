@@ -2,6 +2,7 @@ package com.example.myrh.repository;
 
 import com.example.myrh.dto.responses.OfferRes;
 import com.example.myrh.enums.OfferStatus;
+import com.example.myrh.model.Company;
 import com.example.myrh.model.Offer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,4 +16,6 @@ import java.util.Optional;
 public interface OfferRepo extends JpaRepository<Offer, Integer>, JpaSpecificationExecutor<Offer> {
 
     Page<Offer> findAllByStatus( Pageable pageable, OfferStatus status, Specification<Offer> spec );
+
+    Page<Offer> findAllByCompany(Company company);
 }
