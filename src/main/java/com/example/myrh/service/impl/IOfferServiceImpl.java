@@ -9,6 +9,7 @@ import com.example.myrh.enums.OfferStatus;
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.exception.NotFoundException;
 import com.example.myrh.mapper.OfferMapper;
+import com.example.myrh.model.Company;
 import com.example.myrh.model.JobSeeker;
 import com.example.myrh.model.Offer;
 import com.example.myrh.repository.CompanyRepo;
@@ -25,6 +26,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -191,5 +195,21 @@ public class IOfferServiceImpl implements IOfferService, IOfferInsightsService {
     public Page<JobSeekerOfferInsightsResponse> getCandidatesOfferInsights(int page, int size) {
         // TODO : 08-01-2024 avoir des statistiques des offres d'emploi par candidats id all
         return null;
+    }
+
+    @Override
+    public Collection<JobSeekerOfferInsightsResponse> getAllCandidatesOfferInsights(String id , Map<String, String> params) {
+        //get all jobSeeker which used to apply to this company than call the function before .
+        Company company =  this.companyRepo.findById(Integer.parseInt(id)).orElseThrow(() -> new NotFoundException("Company with "+id+" not found"));
+        Collection<JobSeekerOfferInsightsResponse> jobSeekerOfferInsightsResponseCollection = new ArrayList<>();
+//        PageRequest pageRequest = PageRequest.of(Integer.parseInt(params.get("page")), Integer.parseInt(params.get("size")));
+        //find offers byt company .... then loop into each offer and get all job application from them
+        this.repository.findAllByCompany(company).forEach(offer -> {
+            this.jobApplicantRepo.getAllById_Offer_id(offer.getId()).forEach(jobApplicant -> {
+                jobSeekerOfferInsightsResponseCollection.add(this.getCandidatesOfferInsights(jobApplicant.getId().getJobSeeker_id()));
+
+            });
+        });
+        return jobSeekerOfferInsightsResponseCollection;
     }
 }

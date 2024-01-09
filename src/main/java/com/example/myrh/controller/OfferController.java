@@ -6,10 +6,14 @@ import com.example.myrh.dto.responses.OfferRes;
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.service.IOfferInsightsService;
 import com.example.myrh.service.IOfferService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.Map;
 
 @RestController
 @RequestMapping("myrh/api/v1/offers")
@@ -70,7 +74,14 @@ public class OfferController {
     public ResponseEntity<JobSeekerOfferInsightsResponse> getCandidatesOfferInsights(@PathVariable int candidateID) {
         return ResponseEntity.ok(this.insightsService.getCandidatesOfferInsights(candidateID));
     }
-
+    @GetMapping("/insights/jobSeeker/company/{companyID}")
+    public ResponseEntity<Collection<JobSeekerOfferInsightsResponse>> getAllCandidatesOfferInsights(
+            @PathVariable String companyID,
+            @RequestParam(required = false) Map<String,String> params
+            ) {
+        return ResponseEntity.ok(this.insightsService.getAllCandidatesOfferInsights(
+                companyID, params));
+    }
 
 
 
