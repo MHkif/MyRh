@@ -12,4 +12,8 @@ public interface JobApplicantRepo extends JpaRepository<JobApplicant, JobApplica
     //    Collection<JobApplicant> getAllById_JobSeeker_id(Integer id);
         @Query("select j from JobApplicant j where j.id.jobSeeker_id = :id")
         Collection<JobApplicant> getAllById_JobSeeker_id(Integer id);
+
+    @Query("select j from JobApplicant j where j.id.offer_id = :id")
+    Collection<JobApplicant> getAllById_Offer_id(Integer id);
+
 }
