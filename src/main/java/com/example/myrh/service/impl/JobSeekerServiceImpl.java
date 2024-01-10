@@ -73,12 +73,12 @@ public class JobSeekerServiceImpl implements IJobSeekerService , IJobSeekerFilte
     }
 
     @Override
-    public JobSeekerRes update(int id, JobSeekerRes request) {
+    public JobSeekerRes update(Integer id, JobSeekerRes request) {
         return null;
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
 
     }
 
