@@ -23,6 +23,7 @@ public class Company{
     @OneToMany(mappedBy = "company")
     Set<Agent> agents = new HashSet<>();
 
+
     @Override
     public String toString() {
         return super.toString();

@@ -57,12 +57,12 @@ public class AgentServiceImpl implements IAgentService {
     }
 
     @Override
-    public AgentRes update(int id, AgentRes res) {
+    public AgentRes update(Integer id, AgentRes res) {
         return null;
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
 
     }
 }

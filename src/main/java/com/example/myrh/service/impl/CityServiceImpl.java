@@ -37,12 +37,12 @@ public class CityServiceImpl implements ICityService {
     }
 
     @Override
-    public CityRes update(int id, CityRes res) {
+    public CityRes update(Integer id, CityRes res) {
         return null;
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
 
     }
 }

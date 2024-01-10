@@ -1,10 +1,8 @@
 package com.example.myrh.dto.requests;
 
+import com.example.myrh.enums.JobApplicationStatus;
 import com.example.myrh.model.JobApplicantId;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,4 +19,5 @@ public class JobApplicantReq {
     private JobSeekerReq jobSeeker;
     private MultipartFile resume;
     private Boolean isViewed = false;
+    private JobApplicationStatus status = JobApplicationStatus.WAITING;
 }

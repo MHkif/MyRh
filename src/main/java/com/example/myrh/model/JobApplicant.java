@@ -24,6 +24,4 @@ public class JobApplicant {
     @Enumerated(EnumType.STRING)
     private JobApplicationStatus status;
 
-
-
 }
