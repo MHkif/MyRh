@@ -39,12 +39,12 @@ public class ActivityAreaServiceImpl implements IActivityAreaService {
     }
 
     @Override
-    public ActivityAreaRes update(int id, ActivityAreaRes res) {
+    public ActivityAreaRes update(Integer id, ActivityAreaRes res) {
         return null;
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
 
     }
 }

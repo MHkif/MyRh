@@ -1,13 +1,20 @@
 package com.example.myrh.service.impl;
 
+import com.example.myrh.dto.requests.CompanyJobApplicantReq;
 import com.example.myrh.dto.requests.JobApplicantReq;
 import com.example.myrh.dto.requests.JobSeekerReq;
 import com.example.myrh.dto.responses.JobApplicantRes;
+import com.example.myrh.dto.responses.OfferRes;
+import com.example.myrh.enums.JobApplicationStatus;
+import com.example.myrh.enums.OfferStatus;
+import com.example.myrh.exception.BadRequestException;
 import com.example.myrh.mapper.JobApplicantMapper;
 import com.example.myrh.mapper.JobSeekerMapper;
 import com.example.myrh.model.JobApplicant;
 import com.example.myrh.model.JobApplicantId;
 import com.example.myrh.model.JobSeeker;
+import com.example.myrh.model.Offer;
+import com.example.myrh.repository.CompanyRepo;
 import com.example.myrh.repository.JobApplicantRepo;
 import com.example.myrh.repository.JobSeekerRepo;
 import com.example.myrh.repository.OfferRepo;
@@ -30,6 +37,7 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
     private final JobApplicantMapper mapper;
     private final JobSeekerMapper jobSeekerMapper;
     private final CloudinaryService cloudinaryService;
+    private final CompanyRepo companyRepo;
 
 
 
@@ -79,8 +87,6 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
             throw new EntityNotFoundException("Offer Not Exist");
         }
 
-
-
         JobApplicant jobApplicantMapped = mapper.reqToEntity(request);
         jobApplicantMapped.setResume(cloudinaryService.uploadFile(request.getResume(), "resumes"));
 
@@ -89,12 +95,39 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
     }
 
     @Override
-    public JobApplicantRes update(int id, JobApplicantRes request) {
+    public JobApplicantRes updateStatus(CompanyJobApplicantReq req) {
+        JobApplicantId id = new JobApplicantId();
+        id.setJobSeeker_id(req.getJobSeekerId());
+        id.setOffer_id(req.getOfferId());
+        JobApplicant jobApplicant = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Job Applicant not found"));
+
+        if (!companyRepo.existsById(req.getCompanyId())) {
+            throw new EntityNotFoundException("Company Not Found");
+        }else if(!offerRepo.existsById(req.getOfferId())){
+            throw new EntityNotFoundException("Offer Not Found");
+        }else if(!jobSeekerRepo.existsById(req.getJobSeekerId())) {
+            throw new EntityNotFoundException("JobSeeker Not Found");
+        }else if(req.getCompanyId() == offerRepo.findById(req.getOfferId()).get().getCompany().getId()){
+            jobApplicant.setStatus(req.getStatus());
+        }else{
+            throw new BadRequestException("You Do not have permission to do this action");
+        }
+
+        try {
+           return mapper.toRes(repository.save(jobApplicant));
+        } catch (BadRequestException e) {
+            throw new BadRequestException("Invalid Status");
+        }
+    }
+
+    @Override
+    public JobApplicantRes update(JobApplicantId id, JobApplicantRes request) {
         return null;
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(JobApplicantId id) {
 
     }
 }

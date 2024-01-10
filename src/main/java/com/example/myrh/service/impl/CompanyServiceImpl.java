@@ -2,16 +2,13 @@ package com.example.myrh.service.impl;
 
 import com.example.myrh.dto.requests.CompanyReq;
 import com.example.myrh.dto.responses.CompanyRes;
-import com.example.myrh.dto.responses.RecruiterRes;
 import com.example.myrh.exception.BadRequestException;
 import com.example.myrh.mapper.CompanyMapper;
 import com.example.myrh.model.Company;
 import com.example.myrh.model.Confirmation;
-import com.example.myrh.model.Recruiter;
 import com.example.myrh.repository.CompanyRepo;
 import com.example.myrh.repository.ConfirmationRepo;
 import com.example.myrh.service.ICompanyService;
-import com.example.myrh.exception.NotFoundException;
 import com.example.myrh.service.IEmailService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,12 +91,12 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
-    public CompanyRes update(int id, CompanyRes res) {
+    public CompanyRes update(Integer id, CompanyRes res) {
         return null;
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
 
     }
 

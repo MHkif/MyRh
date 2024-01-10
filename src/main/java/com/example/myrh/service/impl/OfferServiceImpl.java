@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class IOfferServiceImpl implements IOfferService, IOfferInsightsService {
+public class OfferServiceImpl implements IOfferService, IOfferInsightsService {
     private final OfferRepo repository;
     private final JobSeekerRepo jobSeekerRepository;
     private final JobApplicantRepo jobApplicantRepo;
@@ -38,7 +38,7 @@ public class IOfferServiceImpl implements IOfferService, IOfferInsightsService {
 
 
     @Autowired
-    public IOfferServiceImpl(OfferRepo repository, JobSeekerRepo jobSeekerRepository, JobApplicantRepo jobApplicantRepo, CompanyRepo companyRepo, OfferMapper mapper) {
+    public OfferServiceImpl(OfferRepo repository, JobSeekerRepo jobSeekerRepository, JobApplicantRepo jobApplicantRepo, CompanyRepo companyRepo, OfferMapper mapper) {
         this.repository = repository;
         this.jobSeekerRepository = jobSeekerRepository;
         this.jobApplicantRepo = jobApplicantRepo;
@@ -132,7 +132,7 @@ public class IOfferServiceImpl implements IOfferService, IOfferInsightsService {
 
     @Transactional
     @Override
-    public OfferRes update(int id, OfferRes res) {
+    public OfferRes update(Integer id, OfferRes res) {
 
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Offer Not Found");
@@ -145,7 +145,7 @@ public class IOfferServiceImpl implements IOfferService, IOfferInsightsService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
 
     }
 

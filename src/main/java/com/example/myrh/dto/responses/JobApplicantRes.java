@@ -1,6 +1,7 @@
 package com.example.myrh.dto.responses;
 
 import com.example.myrh.dto.requests.JobSeekerReq;
+import com.example.myrh.enums.JobApplicationStatus;
 import com.example.myrh.model.JobApplicantId;
 import lombok.Data;
 
@@ -13,4 +14,5 @@ public class JobApplicantRes {
     private JobSeekerRes jobSeeker;
     private String resume;
     private Boolean isViewed;
+    private JobApplicationStatus status;
 }

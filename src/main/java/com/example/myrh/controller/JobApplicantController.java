@@ -1,15 +1,23 @@
 package com.example.myrh.controller;
 
+import com.example.myrh.dto.HttpRes;
+import com.example.myrh.dto.requests.CompanyJobApplicantReq;
 import com.example.myrh.dto.requests.JobApplicantReq;
 import com.example.myrh.dto.responses.JobApplicantRes;
+import com.example.myrh.dto.responses.OfferRes;
 import com.example.myrh.model.JobApplicantId;
 import com.example.myrh.service.IJobApplicantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("myrh/api/v1/jobApplicants")
@@ -37,4 +45,22 @@ public class JobApplicantController {
         id.setJobSeeker_id(jobSeekerId);
         return ResponseEntity.ok(service.getById(id));
     }
+
+    @PatchMapping("/companies/status")
+    public ResponseEntity<HttpRes> updateStatus(
+            @RequestBody CompanyJobApplicantReq req) {
+        JobApplicantRes response = this.service.updateStatus(req);
+        return ResponseEntity.accepted().body(
+                HttpRes.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .statusCode(HttpStatus.ACCEPTED.value())
+                        .path("myrh/api/v1/jobApplicants")
+                        .status(HttpStatus.ACCEPTED)
+                        .message("jobApplicant has been Updated")
+                        .developerMessage("jobApplicant  has been Updated")
+                        .data(Map.of("response", response))
+                        .build()
+        );
+    }
+
 }
