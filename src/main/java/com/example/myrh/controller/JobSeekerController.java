@@ -77,6 +77,8 @@ public class JobSeekerController {
         return ResponseEntity.ok(jobSeekerFilterService.filterAll(params));
     }
 
+
+
     @GetMapping("{id}")
     public ResponseEntity<JobSeekerRes> get(@PathVariable int id) {
         return ResponseEntity.ok(service.getById(id));
