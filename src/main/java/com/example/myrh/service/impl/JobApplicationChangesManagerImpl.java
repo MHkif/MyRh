@@ -24,7 +24,9 @@ public class JobApplicationChangesManagerImpl implements JobApplicationChangesMa
     }
 
     @Override
-    public void notifyJobApplication() {
-
+    public void notifyJobApplication(Object object) {
+        for (JobSeekerSubscriber jobSeekerSubscriber : jobSeekerSubscribers) {
+            jobSeekerSubscriber.handleNotification(object);
+        }
     }
 }

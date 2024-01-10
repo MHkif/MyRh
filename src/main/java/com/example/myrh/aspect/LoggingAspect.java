@@ -23,7 +23,8 @@ public class LoggingAspect {
     }
 
 
-    @Pointcut("within(com.example.myrh.service.impl..*)")
+    @Pointcut("within(com.example.myrh.service.impl..*)"+
+            " || within(com.example.myrh.controller.JobSeekerSocketController)")
     public void loggingPointCut(){
     }
 

@@ -20,6 +20,7 @@ import com.example.myrh.repository.JobApplicantRepo;
 import com.example.myrh.repository.JobSeekerRepo;
 import com.example.myrh.repository.OfferRepo;
 import com.example.myrh.service.IJobApplicantService;
+import com.example.myrh.service.JobApplicationChangesManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
     private final JobSeekerMapper jobSeekerMapper;
     private final CloudinaryService cloudinaryService;
     private final CompanyRepo companyRepo;
+    private final JobApplicationChangesManager jobApplicationChangesManager;
 
 
 
@@ -125,10 +127,6 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
         }else if(!jobSeekerRepo.existsById(req.getJobSeekerId())) {
             throw new EntityNotFoundException("JobSeeker Not Found");
         }else if(req.getCompanyId() == offerRepo.findById(req.getOfferId()).get().getCompany().getId()){
-            // TODO : Notify Tha Applicant with the status of his Application Request
-            // TODO : Now We need To notify The JobSeeker (Applicant)
-
-
             jobApplicant.setStatus(req.getStatus());
         }else{
             throw new BadRequestException("You Do not have permission update the offer's status ");
@@ -143,6 +141,10 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
             res.setResume(jobApplicant.getResume());
             res.setIsViewed(jobApplicant.getIsViewed());
             res.setStatus(jobApplicant.getStatus());
+
+            //  : Notify Tha Applicant with the status of his Application Request
+            //  : Now We need To notify The JobSeeker (Applicant)
+            this.jobApplicationChangesManager.notifyJobApplication(res);
 
 
             return res;
