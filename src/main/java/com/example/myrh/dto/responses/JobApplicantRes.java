@@ -12,6 +12,7 @@ public class JobApplicantRes {
     private JobApplicantId id;
     private LocalDateTime createdDate = LocalDateTime.now();
     private JobSeekerRes jobSeeker;
+    private OfferRes offer;
     private String resume;
     private Boolean isViewed;
     private JobApplicationStatus status;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,6 +38,12 @@ public class JobApplicantController {
     public ResponseEntity<Page<JobApplicantRes>> getAll(@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(service.getAll(page, size));
     }
+
+    @GetMapping("companies/{companyId}")
+    public ResponseEntity<List<JobApplicantRes>> getAllByCompany(@PathVariable int companyId) {
+        return ResponseEntity.ok(service.getAllByCompany(companyId));
+    }
+
 
     @GetMapping("{offerId}/{jobSeekerId}")
     public ResponseEntity<JobApplicantRes> get(@PathVariable int offerId, @PathVariable int jobSeekerId) {
