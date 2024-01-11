@@ -1,4 +1,4 @@
-package com.example.myrh.service.impl;
+package com.example.myrh.specifications;
 
 import com.example.myrh.enums.StudyLevel;
 import com.example.myrh.model.Offer;
