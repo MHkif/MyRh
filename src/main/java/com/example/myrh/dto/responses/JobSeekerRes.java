@@ -17,6 +17,6 @@ public class JobSeekerRes {
     private String password;
     private String image;
     private boolean isEnabled;
-    Set<Offer> offers = new HashSet<>();
+    //Set<Offer> offers = new HashSet<>();
 
 }

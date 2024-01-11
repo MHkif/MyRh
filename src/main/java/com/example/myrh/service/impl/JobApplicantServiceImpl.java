@@ -44,7 +44,6 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
     private final CompanyRepo companyRepo;
 
 
-
     @Override
     public JobApplicantRes getById(JobApplicantId id) {
         JobApplicant jobApplicant = repository.findById(id).orElseThrow(() -> new IllegalStateException("Job Applicant not found"));
@@ -60,26 +59,41 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
 
 
     @Override
-    public List<JobApplicantRes> getAllByCompany(int companyId ) {
+    public List<JobApplicantRes> getAllByCompany(int companyId) {
 
         if (!companyRepo.existsById(companyId)) {
             throw new EntityNotFoundException("Company Not Found");
         }
-        return repository.findAllByCompany(companyId).stream().map(mapper::toRes).toList();
-    }
+        return repository.findAllByCompany(companyId).stream().map(
+                // mapper::toRes,
+                jobApp -> {
+                    JobApplicantRes res = new JobApplicantRes();
+                    res.setId(jobApp.getId());
+                    res.setOffer(this.offerMapper.toRes(offerRepo.findById(jobApp.getId().getOffer_id()).get()));
+                    res.setJobSeeker(this.jobSeekerMapper.toRes(jobSeekerRepo.findById(jobApp.getId().getJobSeeker_id()).get()));
+                    res.setCreatedDate(jobApp.getCreatedDate());
+                    res.setResume(jobApp.getResume());
+                    res.setIsViewed(jobApp.getIsViewed());
+                    res.setStatus(jobApp.getStatus());
+                    return res;
+                }
+        ).toList();
+
+
+}
 
 
     @Override
     public JobApplicantRes create(JobApplicantReq request) {
-        if(!jobSeekerRepo.existsById(request.getId().getJobSeeker_id())){
-           // throw new IllegalStateException("JobSeeker Not Exist");
+        if (!jobSeekerRepo.existsById(request.getId().getJobSeeker_id())) {
+            // throw new IllegalStateException("JobSeeker Not Exist");
 
             JobSeekerReq jobSeekerReq = new JobSeekerReq();
             jobSeekerReq.setFirst_name(request.getJobSeeker().getFirst_name());
             jobSeekerReq.setLast_name(request.getJobSeeker().getLast_name());
             jobSeekerReq.setEmail(request.getJobSeeker().getEmail());
 
-            if(!offerRepo.existsById(request.getId().getOffer_id())){
+            if (!offerRepo.existsById(request.getId().getOffer_id())) {
                 throw new EntityNotFoundException("Offer Not Exist");
             }
 
@@ -99,7 +113,7 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
             return mapper.toRes(jobApplicant);
         }
 
-        if(!offerRepo.existsById(request.getId().getOffer_id())){
+        if (!offerRepo.existsById(request.getId().getOffer_id())) {
             throw new EntityNotFoundException("Offer Not Exist");
         }
 
@@ -120,17 +134,17 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
 
         if (!companyRepo.existsById(req.getCompanyId())) {
             throw new EntityNotFoundException("Company Not Found");
-        }else if(!offerRepo.existsById(req.getOfferId())){
+        } else if (!offerRepo.existsById(req.getOfferId())) {
             throw new EntityNotFoundException("Offer Not Found");
-        }else if(!jobSeekerRepo.existsById(req.getJobSeekerId())) {
+        } else if (!jobSeekerRepo.existsById(req.getJobSeekerId())) {
             throw new EntityNotFoundException("JobSeeker Not Found");
-        }else if(req.getCompanyId() == offerRepo.findById(req.getOfferId()).get().getCompany().getId()){
+        } else if (req.getCompanyId() == offerRepo.findById(req.getOfferId()).get().getCompany().getId()) {
             // TODO : Notify Tha Applicant with the status of his Application Request
             // TODO : Now We need To notify The JobSeeker (Applicant)
 
 
             jobApplicant.setStatus(req.getStatus());
-        }else{
+        } else {
             throw new BadRequestException("You Do not have permission update the offer's status ");
         }
 
