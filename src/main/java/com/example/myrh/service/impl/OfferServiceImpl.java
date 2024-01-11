@@ -20,6 +20,7 @@ import com.example.myrh.repository.JobSeekerRepo;
 import com.example.myrh.repository.OfferRepo;
 import com.example.myrh.service.IOfferService;
 import com.example.myrh.service.IOfferInsightsService;
+import com.example.myrh.specifications.OfferSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
