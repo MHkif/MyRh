@@ -7,6 +7,8 @@ import com.example.myrh.dto.responses.OfferRes;
 import com.example.myrh.enums.JobApplicationStatus;
 import com.example.myrh.enums.OfferStatus;
 import com.example.myrh.enums.StudyLevel;
+import com.example.myrh.enums.SubscriptionStatus;
+import com.example.myrh.exception.BadRequestException;
 import com.example.myrh.exception.NotFoundException;
 import com.example.myrh.mapper.OfferMapper;
 import com.example.myrh.model.Company;
@@ -26,10 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -129,6 +128,10 @@ public class OfferServiceImpl implements IOfferService, IOfferInsightsService {
             throw new EntityNotFoundException("Company Not Found");
         }
 
+        if(!verifyCompanySubscription(request.getCompany().getId())){
+            throw new BadRequestException("You have reached the limited offers on your pack "+request.getCompany().getSubscription()+" , upgrade your subscription");
+        }
+
         Offer offer = repository.save(mapper.reqToEntity(request));
         return mapper.toRes(offer);
     }
@@ -211,5 +214,18 @@ public class OfferServiceImpl implements IOfferService, IOfferInsightsService {
             });
         });
         return jobSeekerOfferInsightsResponseCollection;
+    }
+
+    @Override
+    public boolean verifyCompanySubscription(int companyId){
+        Company company = companyRepo.findById(companyId).orElseThrow(() -> new EntityNotFoundException("Company not found with the given id"));
+        Collection<Offer> offerList = repository.findAllByCompany(company);
+
+        if(company.getSubscription() == SubscriptionStatus.FREEMIUM){
+            return offerList.size() < 3;
+        }else if(company.getSubscription() == SubscriptionStatus.BASIC){
+            return offerList.size() < 10;
+        }
+        return company.getSubscription() == SubscriptionStatus.PREMIUM;
     }
 }
