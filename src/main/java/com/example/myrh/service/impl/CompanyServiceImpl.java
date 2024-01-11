@@ -2,14 +2,18 @@ package com.example.myrh.service.impl;
 
 import com.example.myrh.dto.requests.CompanyReq;
 import com.example.myrh.dto.responses.CompanyRes;
+import com.example.myrh.enums.SubscriptionStatus;
 import com.example.myrh.exception.BadRequestException;
 import com.example.myrh.mapper.CompanyMapper;
 import com.example.myrh.model.Company;
 import com.example.myrh.model.Confirmation;
 import com.example.myrh.repository.CompanyRepo;
 import com.example.myrh.repository.ConfirmationRepo;
+import com.example.myrh.service.PaymentService;
+import com.example.myrh.service.CompanySubscriptionService;
 import com.example.myrh.service.ICompanyService;
 import com.example.myrh.service.IEmailService;
+import com.stripe.exception.StripeException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,19 +26,22 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class CompanyServiceImpl implements ICompanyService {
+public class CompanyServiceImpl implements ICompanyService , CompanySubscriptionService {
 
     private final CompanyRepo repository;
     private final ConfirmationRepo confirmationRepo;
+    // : INJECT THE PAYMENT SERVICE
+    private PaymentService paymentService;
     private final CompanyMapper mapper;
     private final IEmailService emailService;
     @Value("${spring.mail.properties.verify.host}")
     private String host;
 
     @Autowired
-    public CompanyServiceImpl(CompanyRepo repository, CompanyMapper mapper, ConfirmationRepo confirmationRepo, IEmailService emailService) {
+    public CompanyServiceImpl(CompanyRepo repository, CompanyMapper mapper, ConfirmationRepo confirmationRepo, PaymentService paymentService, IEmailService emailService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.paymentService = paymentService;
         this.emailService = emailService;
         this.confirmationRepo = confirmationRepo;
     }
@@ -176,5 +183,50 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
 
+    @Override
+    public SubscriptionStatus getSubscriptionStatus(String companyId) {
+        return this.repository.findById(Integer.parseInt(companyId))
+                .orElseThrow(() -> new EntityNotFoundException("Company Not Found"))
+                .getSubscription();
+    }
 
+    @Override
+    public boolean subscribe(String companyId, SubscriptionStatus subscriptionStatus , String token) {
+        //: FIRST VERIFY IS THE COMPANY IS VALID WITH THE SAME SUBSCRIPTION
+        if (getSubscriptionStatus(companyId).equals(subscriptionStatus)) {
+            throw new BadRequestException("You are already subscribed to this subscription");
+        }
+        double amount = getAmountBasedOnSubscriptionType(subscriptionStatus);
+        //: THEN VERIFY IF THE COMPANY HAS ENOUGH MONEY TO PAY FOR THE SUBSCRIPTION
+        try{
+            boolean isPay = this.paymentService.pay(token , amount);
+            if(isPay){
+                //: THEN UPDATE THE COMPANY SUBSCRIPTION
+                Company company = this.repository.findById(Integer.parseInt(companyId))
+                        .orElseThrow(() -> new EntityNotFoundException("Company Not Found"));
+                company.setSubscription(subscriptionStatus);
+                this.repository.save(company);
+                return true;
+            }
+        }catch (StripeException e){
+            throw new BadRequestException("Payment Failed"+ e.getCode());
+        }
+        return false;
+    }
+
+    private double getAmountBasedOnSubscriptionType(SubscriptionStatus subscriptionStatus) {
+        switch (subscriptionStatus){
+            case BASIC:
+                return 500.0;
+            case PREMIUM:
+                return 1000.0;
+            default:
+                return 0.0;
+        }
+    }
+
+    @Override
+    public boolean unsubscribe(String companyId) {
+        return false;
+    }
 }
