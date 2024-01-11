@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("myrh/api/v1/company/subscriptions")
+@CrossOrigin("*")
 public class CompanySubscriptionController {
     private final CompanySubscriptionService companySubscriptionService;
 
@@ -16,7 +17,7 @@ public class CompanySubscriptionController {
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<String> subscribe(@RequestBody CompanySubscribeRequest request) {
+    public ResponseEntity<Object> subscribe(@RequestBody CompanySubscribeRequest request) {
         boolean isSubscribed  = companySubscriptionService.subscribe(request.getCompanyId(), request.getSubscriptionStatus(), request.getToken());
         if (!isSubscribed)
             return ResponseEntity.badRequest().body("Subscription failed");
