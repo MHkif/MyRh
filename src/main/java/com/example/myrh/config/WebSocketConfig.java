@@ -16,8 +16,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/").setAllowedOrigins("http://localhost:4200").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/myrh-websocket")
+                .setAllowedOrigins("http://localhost:4200","http://localhost:4200/")
+//                .setAllowedOriginPatterns("*")
+                //: FOR THE SOCKET
+                .withSockJS();
     }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/ws");
+    }
+
+
 
 
 }
