@@ -1,5 +1,6 @@
 package com.example.myrh.model;
 
+import com.example.myrh.enums.SubscriptionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,8 @@ public class Company{
     private boolean enabled;
     @OneToMany(mappedBy = "company")
     Set<Agent> agents = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private SubscriptionStatus subscription = SubscriptionStatus.FREEMIUM;
 
 
     @Override
