@@ -1,5 +1,7 @@
 package com.example.myrh.service.impl;
 
+import com.example.myrh.dto.StripeChargeDto;
+import com.example.myrh.dto.StripeTokenDto;
 import com.example.myrh.model.StripeHistory;
 import com.example.myrh.repository.StripHistoryRepository;
 import com.example.myrh.service.FakeStripeChargeService;
@@ -7,6 +9,9 @@ import com.example.myrh.service.PaymentService;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import com.stripe.model.Token;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +25,17 @@ import java.util.Map;
 
 
 @Service
-
 public class StripePaymentServiceImpl implements PaymentService {
 
 
     @Value("${stripe.api.key}")
     private String secretKey;
-    private FakeStripeChargeService fakeStripeChargeService;
+
+    @PostConstruct
+    public void init(){
+        Stripe.apiKey = secretKey;
+    }
+    private final FakeStripeChargeService fakeStripeChargeService;
 
 
     public StripePaymentServiceImpl(FakeStripeChargeService fakeStripeChargeService) {
@@ -41,7 +50,7 @@ public class StripePaymentServiceImpl implements PaymentService {
 
     @Override
     public boolean pay(String token, double amount) throws StripeException {
-        Stripe.apiKey = secretKey;
+        init();
 
         Map<String, Object> params = new HashMap<>();
         params.put("amount", amount);
@@ -53,6 +62,54 @@ public class StripePaymentServiceImpl implements PaymentService {
 
         return true;
     }
+
+    @Override
+    public StripeChargeDto charge(StripeChargeDto chargeRequest) {
+        try{
+            chargeRequest. setSuccess(false);
+            Map<String, Object> chargeParams = new HashMap<>();
+            chargeParams.put("amount" ,(int) (chargeRequest.getAmount() * 100));
+            chargeParams.put("currency", "MAD");
+            chargeParams.put("description", " Payment for id " + chargeRequest.getAdditionalInfo().getOrDefault("ID_TAG",""));
+            chargeParams.put("source", chargeRequest.getStripeToken());
+            Map<String, Object> metaData  = new HashMap<>();
+            metaData.put("id", chargeRequest.getChargeId());
+            metaData.putAll(chargeRequest.getAdditionalInfo());
+            chargeParams.put("metadata", metaData);
+            Charge charge = Charge.create(chargeParams);
+            chargeRequest.setMessage(charge.getOutcome().getSellerMessage());
+            if (charge.getPaid()){
+                chargeRequest.setChargeId(charge.getId());
+                chargeRequest.setSuccess(true);
+            }
+            return chargeRequest;
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public StripeTokenDto createCardToken(StripeTokenDto model) {
+        try {
+            Map<String, Object> card = new HashMap<>();
+            card.put("number", model.getCardNumber());
+            card.put("exp_month", model.getExpMonth());
+            card.put("exp_year", model.getExpYear());
+            card.put("cvc", model.getCvc());
+            Map<String, Object> params = new HashMap<>();
+            params.put("card", card);
+            Token token = Token.create(params);
+            if (token != null) {
+                 model.setToken(token.getId());
+                 model.setSuccess(true);
+            }
+            return model;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
 
 
 
