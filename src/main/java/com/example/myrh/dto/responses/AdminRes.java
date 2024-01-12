@@ -1,14 +1,13 @@
-package com.example.myrh.dto.requests;
+package com.example.myrh.dto.responses;
 
-import com.example.myrh.model.Company;
 import lombok.Data;
 
 @Data
-public class AgentReq {
+public class AdminRes {
+    private int id;
     private String first_name;
     private String last_name;
     private String email;
     private String password;
     private String image;
-    private Company company;
 }

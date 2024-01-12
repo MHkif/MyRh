@@ -29,7 +29,7 @@ class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(
             ICompanyService companyService,
-            IAgentService agentService,
+            IAdminService adminService,
             IActivityAreaService profileService,
             ICityService cityService,
             IOfferService offerService,
@@ -41,18 +41,17 @@ class LoadDatabase {
 
             saveJobSeeker(jobSeekerRepo);
 
+            AdminReq admin = new AdminReq();
+            admin.setFirst_name("Abdelmalek");
+            admin.setLast_name("Achkif");
+            admin.setEmail("admin@myrh.com");
+            admin.setPassword("aqwzsxedc");
+
             CompanyReq c1 = new CompanyReq();
             c1.setName("Sofrecom");
             c1.setEmail("sofrecom@orange.com");
             c1.setPassword("12345678");
             c1.setImage("sofrecom.png");
-
-            AgentReq agent = new AgentReq();
-            agent.setFirst_name("Abdelmalek");
-            agent.setLast_name("Achkif");
-            agent.setEmail("agent@gmail.com");
-            agent.setPassword("aqwzsxedc");
-            agent.setCompany(Company.builder().id(1).build());
 
 
 
@@ -97,9 +96,8 @@ class LoadDatabase {
 
  */
 
-
+            log.info("Preloading Admin 1 : " + adminService.create(admin).toString());
             log.info("Preloading Company 1: " + companyService.create(c1).toString());
-            log.info("Preloading Agent 1 : " + agentService.create(agent).toString());
             log.info("Preloading City 1 : " + cityService.create(city).toString());
             log.info("Preloading City 2 : " + cityService.create(city2).toString());
             log.info("Preloading City 3 : " + cityService.create(city3).toString());

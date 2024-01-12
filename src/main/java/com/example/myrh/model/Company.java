@@ -21,8 +21,7 @@ public class Company{
     private String password;
     private String image;
     private boolean enabled;
-    @OneToMany(mappedBy = "company")
-    Set<Agent> agents = new HashSet<>();
+
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus subscription = SubscriptionStatus.FREEMIUM;
 
