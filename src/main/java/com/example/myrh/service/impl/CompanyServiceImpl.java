@@ -1,5 +1,6 @@
 package com.example.myrh.service.impl;
 
+import com.example.myrh.dto.CompanySubscribeResponse;
 import com.example.myrh.dto.requests.CompanyReq;
 import com.example.myrh.dto.responses.CompanyRes;
 import com.example.myrh.enums.SubscriptionStatus;
@@ -212,6 +213,11 @@ public class CompanyServiceImpl implements ICompanyService , CompanySubscription
             throw new BadRequestException("Payment Failed"+ e.getCode());
         }
         return false;
+    }
+
+    @Override
+    public CompanySubscribeResponse pay(String companyId, SubscriptionStatus subscriptionStatus, String token) {
+        return null;
     }
 
     private double getAmountBasedOnSubscriptionType(SubscriptionStatus subscriptionStatus) {
