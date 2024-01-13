@@ -189,9 +189,12 @@ public class OfferServiceImpl implements IOfferService, IOfferInsightsService {
 
 
         });
+
         response.setNbCandidatesAccepted(nbCandidatesAccepted.get());
         response.setNbCandidatesRefused(nbCandidatesRefused.get());
         response.setNbCandidatesInProcess(nbCandidatesInProcess.get());
+        response.setJobSeeker_status(jobSeeker.getStatus());
+        response.setJobSeekerName(jobSeeker.getFirst_name()+" "+jobSeeker.getLast_name());
         return response;
     }
 

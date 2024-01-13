@@ -1,5 +1,7 @@
 package com.example.myrh.dto.responses;
 
+import com.example.myrh.enums.JobSeekerStatus;
+import com.example.myrh.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,5 +26,6 @@ public class JobSeekerOfferInsightsResponse {
     int nbCandidatesWaiting;
     @JsonProperty("nb_job_in_process")
     int nbCandidatesInProcess;
+    UserStatus jobSeeker_status ;
     Collection<CandidateOffersApply> candidateOffersApplyCollection = new ArrayList<>();
 }
