@@ -88,7 +88,6 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
     @Override
     public JobApplicantRes create(JobApplicantReq request) {
         if (!jobSeekerRepo.existsById(request.getId().getJobSeeker_id())) {
-            // throw new IllegalStateException("JobSeeker Not Exist");
 
             JobSeekerReq jobSeekerReq = new JobSeekerReq();
             jobSeekerReq.setFirst_name(request.getJobSeeker().getFirst_name());
