@@ -87,7 +87,6 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
 
     @Override
     public JobApplicantRes create(JobApplicantReq request) {
-
         if (!jobSeekerRepo.existsByEmail(request.getJobSeeker().getEmail())) {
 
             JobSeekerReq jobSeekerReq = new JobSeekerReq();
