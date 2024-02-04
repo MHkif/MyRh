@@ -87,21 +87,23 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
 
     @Override
     public JobApplicantRes create(JobApplicantReq request) {
-        if (!jobSeekerRepo.existsById(request.getId().getJobSeeker_id())) {
+
+        if (!jobSeekerRepo.existsByEmail(request.getJobSeeker().getEmail())) {
 
             JobSeekerReq jobSeekerReq = new JobSeekerReq();
             jobSeekerReq.setFirst_name(request.getJobSeeker().getFirst_name());
             jobSeekerReq.setLast_name(request.getJobSeeker().getLast_name());
             jobSeekerReq.setEmail(request.getJobSeeker().getEmail());
 
+            JobSeeker jobSeeker = jobSeekerRepo.save(jobSeekerMapper.reqToEntity(jobSeekerReq));
+
             if (!offerRepo.existsById(request.getId().getOffer_id())) {
                 throw new EntityNotFoundException("Offer Not Exist");
             }
 
-            JobSeeker jobSeeker = jobSeekerRepo.save(jobSeekerMapper.reqToEntity(jobSeekerReq));
             JobApplicantId jobApplicantId = new JobApplicantId();
             jobApplicantId.setJobSeeker_id(jobSeeker.getId());
-            jobApplicantId.setOffer_id(1);
+            jobApplicantId.setOffer_id(request.getId().getOffer_id());
 
             request.setId(jobApplicantId);
 
@@ -118,6 +120,12 @@ public class JobApplicantServiceImpl implements IJobApplicantService {
             throw new EntityNotFoundException("Offer Not Exist");
         }
 
+        this.jobSeekerRepo.findByEmail(request.getJobSeeker().getEmail()).ifPresent(jobSeeker -> {
+            JobApplicantId jobApplicantId = new JobApplicantId();
+            jobApplicantId.setJobSeeker_id(jobSeeker.getId());
+            jobApplicantId.setOffer_id(request.getId().getOffer_id());
+            request.setId(jobApplicantId);
+        });
         JobApplicant jobApplicantMapped = mapper.reqToEntity(request);
         jobApplicantMapped.setResume(cloudinaryService.uploadFile(request.getResume(), "resumes"));
 
