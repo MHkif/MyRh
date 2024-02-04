@@ -1,19 +1,10 @@
 package com.example.myrh.dto.requests;
 
-import com.example.myrh.model.Agent;
-import com.example.myrh.model.Recruiter;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 public class CompanyReq {
